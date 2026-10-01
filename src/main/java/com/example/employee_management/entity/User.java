@@ -1,4 +1,3 @@
-
 package com.example.employee_management.entity;
 
 import jakarta.persistence.*;
