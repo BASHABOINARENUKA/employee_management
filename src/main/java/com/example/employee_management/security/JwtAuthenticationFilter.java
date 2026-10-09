@@ -1,9 +1,5 @@
 package com.example.employee_management.security;
-
 import com.example.employee_management.service.JwtService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,9 +7,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import javax.crypto.SecretKey;
 import java.io.IOException;
-
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     public JwtAuthenticationFilter(JwtService jwtService) {
@@ -32,8 +28,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
 
             String username = jwtService.extractUsername(token);
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, java.util.Collections.emptyList());
+            String role = jwtService.extractRole(token);
+            if (username != null && role != null
+                    && SecurityContextHolder.getContext().getAuthentication() == null) {
+                SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, List.of(authority));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 

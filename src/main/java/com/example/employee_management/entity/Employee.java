@@ -1,11 +1,9 @@
 package com.example.employee_management.entity;
-
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "employee")
 public class Employee {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,16 +41,12 @@ public class Employee {
     public void setId(Long id) {
         this.id = id;
     }
-
-
     public String getFirstName() {
         return firstName;
     }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-
 
     public String getLastName() {
         return lastName;
@@ -62,7 +56,6 @@ public class Employee {
         this.lastName = lastName;
     }
 
-
     public String getEmail() {
         return email;
     }
@@ -70,7 +63,6 @@ public class Employee {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -89,7 +81,6 @@ public class Employee {
         this.salary = salary;
     }
 
-
     public String getDesignation() {
         return designation;
     }
@@ -97,7 +88,6 @@ public class Employee {
     public void setDesignation(String designation) {
         this.designation = designation;
     }
-
 
     public Department getDepartment() {
         return department;

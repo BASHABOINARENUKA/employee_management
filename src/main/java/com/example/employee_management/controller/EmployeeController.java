@@ -1,18 +1,13 @@
 package com.example.employee_management.controller;
-
-import com.example.employee_management.entity.Employee;
 import com.example.employee_management.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import com.example.employee_management.util.WelcomeMessage;
-import org.springframework.data.web.PageableDefault;
-
+import org.springframework.http.ResponseEntity;
+import com.example.employee_management.dto.EmployeeResponseDTO;
+import com.example.employee_management.dto.EmployeeRequestDTO;
 @RestController
 @RequestMapping("/employees")
 
@@ -21,46 +16,25 @@ public class EmployeeController {
     EmployeeService employeeService;
 
     @PostMapping
-    public Employee saveEmployee(@RequestBody Employee employee) {
-        return employeeService.saveEmployee(employee);
-
-
+    public ResponseEntity<EmployeeResponseDTO> saveEmployee(@RequestBody EmployeeRequestDTO request) {
+        EmployeeResponseDTO response = employeeService.saveEmployee(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
-    public List<Employee> getAllEmployees() {
-        return employeeService.getAllEmployees();
-    }
-
-    @GetMapping("/page")
-    public Page<Employee> getEmployeesWithPagination(Pageable pageable) {
-
-        return employeeService.getEmployeesWithPagination(pageable);
-    }
-
-    @GetMapping("/search")
-    public List<Employee> searchEmployees(@RequestParam String name) {
-        return employeeService.searchEmployees(name);
+    public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees() {
+        return ResponseEntity.ok(employeeService.getAllEmployees());
     }
 
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
-
-        return employeeService.updateEmployee(id, employee);
+    public ResponseEntity<EmployeeResponseDTO> updateEmployee(@PathVariable Long id, @RequestBody EmployeeRequestDTO request) {
+        return ResponseEntity.ok(employeeService.updateEmployee(id,request));
     }
 
     @DeleteMapping("/{id}")
-    public String deleteEmployee(@PathVariable Long id) {
-
+    public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
-        return "Employee deleted successfully";
+        return ResponseEntity.ok("Employee deleted successfully");
     }
 
-    @Autowired
-    private WelcomeMessage welcomeMessage;
-
-    @GetMapping("/welcome")
-    public String welcome() {
-        return welcomeMessage.getMessage();
-    }
 }

@@ -20,7 +20,6 @@ public class AuthService {
         Role role = roleRepository.findByName(roleName).orElseThrow(() -> new RuntimeException("Role not found: " + roleName));
         User user = new User();
         user.setUsername(username);
-        // NEVER store the plain password
         user.setPassword(passwordEncoder.encode(password));
         user.setRole(role);
         return userRepository.save(user);
@@ -33,6 +32,7 @@ public class AuthService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
-        return jwtService.generateToken(username);
+        String roleName = user.getRole().getName();
+        return jwtService.generateToken(username,roleName);
     }
 }

@@ -1,6 +1,5 @@
 
 package com.example.employee_management.entity;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
