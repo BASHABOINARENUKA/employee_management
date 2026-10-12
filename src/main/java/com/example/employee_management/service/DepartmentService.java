@@ -26,7 +26,9 @@ public class DepartmentService {
         List<Department> departments = departmentRepository.findAll();
         List<DepartmentResponseDTO> responses = new ArrayList<>();
         for(Department department :departments){
+            String name =department.getName() + " " + department.getLocation();
             DepartmentResponseDTO response = DepartmentMapper.toResponseDTO(department);
+            response.setName(name);
             responses.add(response);
         }
         return responses;
@@ -35,6 +37,7 @@ public class DepartmentService {
 
     public DepartmentResponseDTO getDepartmentById(Long id) {
         Department department= departmentRepository.findById(id).orElseThrow(() -> new DepartmentNotFoundException("Department not found with id: " + id));
+        department.setName(department.getName() + "  "+ department.getLocation());
         return DepartmentMapper.toResponseDTO(department);
     }
 

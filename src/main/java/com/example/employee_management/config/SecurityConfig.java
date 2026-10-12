@@ -1,6 +1,7 @@
 package com.example.employee_management.config;
 import com.example.employee_management.security.JwtAuthenticationFilter;
 import com.example.employee_management.service.JwtService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +28,7 @@ public class SecurityConfig {
                                 SessionCreationPolicy.STATELESS
                         )
                 )
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll().requestMatchers("/error").permitAll()
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/employees", "/employees/**",
@@ -49,6 +50,14 @@ public class SecurityConfig {
                                 "/departments", "/departments/**"
                         ).hasRole("ADMIN")
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, ex) -> {
+                            response.sendError(
+                                    HttpServletResponse.SC_UNAUTHORIZED,
+                                    "Unauthorized"
+                            );
+                        })
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
         return http.build();

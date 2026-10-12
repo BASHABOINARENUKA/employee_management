@@ -5,10 +5,12 @@ import org.springframework.http.HttpStatus;
 import com.example.employee_management.service.DepartmentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import com.example.employee_management.dto.DepartmentDetailsResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import java.util.List;
-
+import java.util.*;
 @RestController
 @RequestMapping("/departments")
 public class DepartmentController {
@@ -28,8 +30,14 @@ public class DepartmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DepartmentResponseDTO> getDepartmentById(@PathVariable Long id) {
-        return ResponseEntity.ok(departmentService.getDepartmentById(id));
+    public DepartmentDetailsResponse getDepartmentById(@PathVariable Long id) {
+        DepartmentResponseDTO response =departmentService.getDepartmentById(id);
+        /*Map<String,Object> responseMap = new LinkedHashMap<>();
+        responseMap.put("id",response.getId());
+        responseMap.put("name",response.getName());
+        responseMap.put("location",response.getLocation());
+        responseMap.put("combined",response.getName()+" "+ response.getLocation());*/
+        return new DepartmentDetailsResponse(response.getId(), response.getName(), response.getLocation());
     }
 
     @PutMapping("/{id}")
@@ -38,8 +46,12 @@ public class DepartmentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity <String> deleteDepartment(@PathVariable Long id) {
+    public ResponseEntity <Void> deleteDepartment(@PathVariable Long id) {
         departmentService.deleteDepartment(id);
-        return ResponseEntity.ok("Department deleted successfully");
+        return ResponseEntity.noContent().build();
+    }
+    @GetMapping(value = "/hello")
+    public String hello(){
+        return "hi";
     }
 }
