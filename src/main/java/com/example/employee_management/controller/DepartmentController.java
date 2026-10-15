@@ -1,4 +1,5 @@
 package com.example.employee_management.controller;
+import com.example.employee_management.dto.ApiResponse;
 import com.example.employee_management.dto.DepartmentResponseDTO;
 import com.example.employee_management.dto.DepartmentRequestDTO;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Controller;
 import com.example.employee_management.dto.DepartmentDetailsResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import com.example.employee_management.dto.ApiResponse;
+import org.springframework.ui.Model;
+import java.net.URI;
 import java.util.List;
 import java.util.*;
 @RestController
@@ -19,7 +23,8 @@ public class DepartmentController {
     @PostMapping
     public ResponseEntity <DepartmentResponseDTO> saveDepartment(@Valid @RequestBody DepartmentRequestDTO request) {
         DepartmentResponseDTO response =departmentService.saveDepartment(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        URI location = URI.create("/departments/" + response.getId());
+        return ResponseEntity.created(location).body(response);
     }
 
     @GetMapping
@@ -30,15 +35,40 @@ public class DepartmentController {
     }
 
     @GetMapping("/{id}")
-    public DepartmentDetailsResponse getDepartmentById(@PathVariable Long id) {
+    public ResponseEntity<DepartmentResponseDTO> getDepartmentById(@PathVariable Long id) {
         DepartmentResponseDTO response =departmentService.getDepartmentById(id);
-        /*Map<String,Object> responseMap = new LinkedHashMap<>();
-        responseMap.put("id",response.getId());
-        responseMap.put("name",response.getName());
-        responseMap.put("location",response.getLocation());
-        responseMap.put("combined",response.getName()+" "+ response.getLocation());*/
-        return new DepartmentDetailsResponse(response.getId(), response.getName(), response.getLocation());
+        return ResponseEntity.ok(response);
     }
+
+
+    @GetMapping("/{id}/page")
+    public String getDepartmentPage(@PathVariable Long id, Model model) {
+        DepartmentResponseDTO department = departmentService.getDepartmentById(id);
+        model.addAttribute("department", department);
+        return "departments";
+    }
+
+    /*@GetMapping("/{id}")
+    public ResponseEntity<Map<String,Object>> getDepartmentById(@PathVariable Long id){
+        DepartmentResponseDTO response = departmentService.getDepartmentById(id);
+        Map<String ,Object> map = Map.of("message","Department Fetched",
+                "data",response);
+        return ResponseEntity.ok(map);
+    }*/
+    /*@GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<DepartmentResponseDTO>> getDepartmentById(@PathVariable Long id){
+        DepartmentResponseDTO response = departmentService.getDepartmentById(id);
+        return ResponseEntity.ok(new ApiResponse<>("Department Fectched ",response));
+
+    }*/
+    /*@GetMapping("/{id}")
+    public ResponseEntity<Map<String,Object>> getDepartmentById(@PathVariable Long id){
+        DepartmentResponseDTO response = departmentService.getDepartmentById(id);
+        Map<String,Object> mp = new LinkedHashMap<>();
+        mp.put("id",response.getId());
+        mp.put("name",response.getName());
+        return ResponseEntity.ok(mp);
+    }*/
 
     @PutMapping("/{id}")
     public ResponseEntity<DepartmentResponseDTO> updateDepartment(@PathVariable Long id, @Valid @RequestBody DepartmentRequestDTO request) {

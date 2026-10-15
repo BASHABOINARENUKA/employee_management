@@ -19,6 +19,9 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     public User register(String username, String password, String roleName) {
+        if (userRepository.findByUsername(username).isPresent() ){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
+        }
         Role role = roleRepository.findByName(roleName).orElseThrow(() -> new RuntimeException("Role not found: " + roleName));
         User user = new User();
         user.setUsername(username);

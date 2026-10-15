@@ -5,7 +5,8 @@ public class DepartmentDetailsResponse {
     private String name;
     private String location;
     private String combined;
-
+    public DepartmentDetailsResponse() {
+    }
     public DepartmentDetailsResponse(Long id, String name, String location) {
         this.id = id;
         this.name = name;

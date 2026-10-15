@@ -1,5 +1,5 @@
 package com.example.employee_management.exception;
-
+import java.io.IOException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,11 +22,11 @@ public class GlobalExceptionHandler {
     }
 
     // Department not found
-    @ExceptionHandler(DepartmentNotFoundException.class)
+    /*@ExceptionHandler(DepartmentNotFoundException.class)
     public ResponseEntity<String> handle(DepartmentNotFoundException ex) {
 
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
+    }*/
 
     // Validation errors from @Valid
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -43,9 +43,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<Map<String, String>> handleResponseStatusException(ResponseStatusException ex) {
-
         Map<String, String> body = Map.of("error", ex.getStatusCode().toString(), "message", ex.getReason() != null ? ex.getReason() : "Request failed");
-
         return ResponseEntity.status(ex.getStatusCode()).body(body);
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<String> handleIOException(IOException ex) {
+
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("External API call failed: " + ex.getMessage());
     }
 }

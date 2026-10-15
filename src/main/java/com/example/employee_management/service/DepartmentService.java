@@ -1,5 +1,4 @@
 package com.example.employee_management.service;
-import com.example.employee_management.exception.DepartmentNotFoundException;
 import com.example.employee_management.dto.DepartmentRequestDTO;
 import com.example.employee_management.dto.DepartmentResponseDTO;
 import com.example.employee_management.entity.Department;
@@ -7,7 +6,8 @@ import com.example.employee_management.mapper.DepartmentMapper;
 import com.example.employee_management.repository.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.ArrayList;
 @Service
@@ -36,14 +36,13 @@ public class DepartmentService {
     }
 
     public DepartmentResponseDTO getDepartmentById(Long id) {
-        Department department= departmentRepository.findById(id).orElseThrow(() -> new DepartmentNotFoundException("Department not found with id: " + id));
-        department.setName(department.getName() + "  "+ department.getLocation());
+        Department department= departmentRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Department not found with id: " + id));
         return DepartmentMapper.toResponseDTO(department);
     }
 
     public DepartmentResponseDTO updateDepartment(Long id, DepartmentRequestDTO request) {
 
-        Department department = departmentRepository.findById(id).orElseThrow(() -> new DepartmentNotFoundException("Department not found with id: " + id));
+        Department department = departmentRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Department not found with id: " + id));
         department.setName(request.getName());
         department.setLocation(request.getLocation());
         departmentRepository.save(department);
@@ -52,7 +51,7 @@ public class DepartmentService {
 
     public void deleteDepartment(Long id) {
 
-        Department department = departmentRepository.findById(id).orElseThrow(() -> new DepartmentNotFoundException("Department not found with id: " + id));
+        Department department = departmentRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Department not found with id: " + id));
         departmentRepository.delete(department);
     }
 }
