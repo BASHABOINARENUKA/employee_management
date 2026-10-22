@@ -31,9 +31,7 @@ public class GlobalExceptionHandler {
     // Validation errors from @Valid
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationException(MethodArgumentNotValidException ex) {
-
         Map<String, String> errors = new HashMap<>();
-
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             errors.put(error.getField(), error.getDefaultMessage());
         });
@@ -49,7 +47,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<String> handleIOException(IOException ex) {
-
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("External API call failed: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }

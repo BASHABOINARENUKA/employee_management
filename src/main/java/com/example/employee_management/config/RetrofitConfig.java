@@ -1,5 +1,4 @@
 package com.example.employee_management.config;
-
 import com.example.employee_management.client.RetrofitApi;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,7 +21,7 @@ public class RetrofitConfig {
     }
 
     @Bean
-    public RetrofitApi employeeApi(Retrofit retrofit) {
+    public RetrofitApi retrofitApi(Retrofit retrofit) {
         return retrofit.create(RetrofitApi.class);
     }
 }

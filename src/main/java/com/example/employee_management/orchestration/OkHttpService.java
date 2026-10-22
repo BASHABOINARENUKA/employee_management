@@ -1,11 +1,8 @@
 package com.example.employee_management.orchestration;
+import com.example.employee_management.dto.*;
+import retrofit2.http.Header;
 import tools.jackson.databind.JsonNode;
 import com.example.employee_management.client.ApiClient;
-import com.example.employee_management.dto.DepartmentDetailsResponse;
-import com.example.employee_management.dto.DepartmentResponseDTO;
-import com.example.employee_management.dto.EmployeeResponseDTO;
-import com.example.employee_management.dto.EmployeeDepartmentResponseDTO;
-import com.example.employee_management.dto.EmployeeDepartmentSummaryDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
@@ -59,6 +56,9 @@ public class OkHttpService {
         String url = employeeBaseUrl + "/employees/" + id;
         return apiClient.put(url, requestData, JsonNode.class, token);
     }
-
+    public DepartmentResponseDTO createDepartement(DepartmentRequestDTO request, String token) throws IOException {
+        String url = departmentBaseUrl + "/departments";
+        return apiClient.post(url, request, DepartmentResponseDTO.class,token);
+    }
 
 }

@@ -2,6 +2,7 @@ package com.example.employee_management.controller;
 import com.example.employee_management.dto.ApiResponse;
 import com.example.employee_management.dto.DepartmentResponseDTO;
 import com.example.employee_management.dto.DepartmentRequestDTO;
+import com.example.employee_management.entity.Department;
 import org.springframework.http.HttpStatus;
 import com.example.employee_management.service.DepartmentService;
 import jakarta.validation.Valid;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import com.example.employee_management.dto.ApiResponse;
 import org.springframework.ui.Model;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestParam;
 import java.net.URI;
 import java.util.List;
 import java.util.*;
@@ -40,14 +43,10 @@ public class DepartmentController {
         return ResponseEntity.ok(response);
     }
 
-
-    @GetMapping("/{id}/page")
-    public String getDepartmentPage(@PathVariable Long id, Model model) {
-        DepartmentResponseDTO department = departmentService.getDepartmentById(id);
-        model.addAttribute("department", department);
-        return "departments";
+    @GetMapping("/page")
+    public ResponseEntity<Page<DepartmentResponseDTO>> getDepartments(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,@RequestParam(defaultValue="id") String sortBy,@RequestParam(defaultValue="asc") String direction,@RequestParam(required = false) String name) {
+        return ResponseEntity.ok(departmentService.getDepartments(page, size,sortBy, direction,name));
     }
-
     /*@GetMapping("/{id}")
     public ResponseEntity<Map<String,Object>> getDepartmentById(@PathVariable Long id){
         DepartmentResponseDTO response = departmentService.getDepartmentById(id);

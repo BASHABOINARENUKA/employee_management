@@ -12,7 +12,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.http.HttpMethod;
+import com.example.employee_management.security.RateLimitFilter;import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 @Configuration
+//@EnableMethodSecurity
 public class SecurityConfig {
     @Autowired
     private JwtService jwtService;
@@ -21,7 +24,15 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public FilterRegistrationBean<RateLimitFilter> rateLimitFilterRegistration(RateLimitFilter filter) {
+        FilterRegistrationBean<RateLimitFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,JwtAuthenticationFilter jwtAuthenticationFilter,
+                                                   RateLimitFilter rateLimitFilter) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
@@ -58,8 +69,7 @@ public class SecurityConfig {
                                     "Unauthorized"
                             );
                         })
-                )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
+                ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class).addFilterAfter(rateLimitFilter, JwtAuthenticationFilter.class);
         return http.build();
     }
 }

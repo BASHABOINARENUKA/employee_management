@@ -50,7 +50,8 @@ public class ApiClient {
                 if (response.body()==null) {
                     throw new IOException("API returned an empty response");
                 }
-                return objectMapper.readValue(json, responseType);
+                String responseJson = response.body().string();
+                return objectMapper.readValue(responseJson, responseType);
             }
 
         }

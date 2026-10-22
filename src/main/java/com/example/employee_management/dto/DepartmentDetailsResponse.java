@@ -4,14 +4,14 @@ public class DepartmentDetailsResponse {
     private Long id;
     private String name;
     private String location;
-    private String combined;
+    //private String combined;
     public DepartmentDetailsResponse() {
     }
     public DepartmentDetailsResponse(Long id, String name, String location) {
         this.id = id;
         this.name = name;
         this.location = location;
-        this.combined = name + " " + location;
+        //this.combined = name + " " + location;
     }
 
     public Long getId() {
@@ -25,8 +25,7 @@ public class DepartmentDetailsResponse {
     public String getLocation() {
         return location;
     }
-
     public String getCombined() {
-        return combined;
+        return name + " " + location;
     }
 }

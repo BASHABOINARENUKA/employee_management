@@ -1,4 +1,5 @@
 package com.example.employee_management.controller;
+import com.example.employee_management.dto.DepartmentResponseDTO;
 import com.example.employee_management.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.http.ResponseEntity;
 import com.example.employee_management.dto.EmployeeResponseDTO;
 import com.example.employee_management.dto.EmployeeRequestDTO;
+import com.example.employee_management.exception.EmployeeNotFoundException;
 @RestController
 @RequestMapping("/employees")
 
@@ -39,6 +41,14 @@ public class EmployeeController {
     public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
         return ResponseEntity.ok("Employee deleted successfully");
+    }
+    /*@GetMapping("/employees/{id}")
+    public EmployeeResponseDTO getEmployee(@PathVariable Long id) {
+        return employeeService.getEmployeeForCurrentUser(id);
+    }*/
+    @ExceptionHandler(EmployeeNotFoundException.class)
+    public ResponseEntity<String> handleEmployeeNotFound(EmployeeNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
 }

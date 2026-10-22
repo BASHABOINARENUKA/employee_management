@@ -4,10 +4,16 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.util.Date;
-
+import org.springframework.beans.factory.annotation.Value;
+import java.nio.charset.StandardCharsets;
 @Service
 public class JwtService {
-    private final SecretKey secretKey = Keys.hmacShaKeyFor("my-super-secret-key-for-employee-management-123456".getBytes());
+    private final SecretKey secretKey;
+
+    public JwtService(@Value("${jwt.secret}") String jwtSecret) {
+        this.secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+    }
+
     public String generateToken(String username,String role) {
         return Jwts.builder().subject(username).claim("role", role).issuedAt(new Date()).expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)).signWith(secretKey).compact();
     }

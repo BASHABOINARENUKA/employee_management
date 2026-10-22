@@ -68,21 +68,17 @@ public class RetrofitEmployeeService {
     }
 
     public EmployeeDepartmentResponseDTO getEmployeeWithDepartment(Long employeeId, String token) throws IOException {
-        // 1. Call Employee API
         Response<EmployeeResponseDTO> employeeResponse = retrofitApi.getEmployee(employeeId, token).execute();
         if (!employeeResponse.isSuccessful() || employeeResponse.body() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Employee API failed with status: " + employeeResponse.code());
         }
         EmployeeResponseDTO employee = employeeResponse.body();
-        // 2. Get the department ID from the employee
         Long departmentId = employee.getDepartmentId();
-        // 3. Call Department API
         Response<DepartmentDetailsResponse> departmentResponse = retrofitApi.getDepartment(departmentId, token).execute();
         if (!departmentResponse.isSuccessful() || departmentResponse.body() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Department API failed with status: " + departmentResponse.code());
         }
         DepartmentDetailsResponse department = departmentResponse.body();
-        // 4. Combine both responses
         return new EmployeeDepartmentResponseDTO(employee, department);
     }
 }

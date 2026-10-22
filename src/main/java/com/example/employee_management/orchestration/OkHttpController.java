@@ -1,4 +1,6 @@
 package com.example.employee_management.orchestration;
+import com.example.employee_management.dto.DepartmentRequestDTO;
+import com.example.employee_management.dto.DepartmentResponseDTO;
 import tools.jackson.databind.JsonNode;
 import com.example.employee_management.dto.EmployeeDepartmentResponseDTO;
 import com.example.employee_management.dto.EmployeeDepartmentSummaryDTO;
@@ -9,7 +11,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 @RestController
-@RequestMapping("/api/orchestration")
+@RequestMapping("/api/orchestration/okhttp")
 public class OkHttpController {
 
     private final OkHttpService okHttpService;
@@ -46,6 +48,12 @@ public class OkHttpController {
     public ResponseEntity<JsonNode> updateEmployee(@PathVariable Long id, @RequestBody JsonNode requestData, @RequestHeader("Authorization") String authorization) throws IOException {
         String token = authorization.replaceFirst("(?i)^Bearer\\s+", "");
         JsonNode response = okHttpService.updateEmployee(id, requestData, token);
+        return ResponseEntity.ok(response);
+    }
+    @PostMapping("/departments")
+    public ResponseEntity<DepartmentResponseDTO> createDepartemnt(@RequestBody DepartmentRequestDTO requestData, @RequestHeader("Authorization") String authorization) throws IOException{
+        String token = authorization.replaceFirst("(?i)^Bearer\\s+","");
+        DepartmentResponseDTO response = okHttpService.createDepartement(requestData,token);
         return ResponseEntity.ok(response);
     }
 

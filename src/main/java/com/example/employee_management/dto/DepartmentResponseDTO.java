@@ -1,6 +1,22 @@
 package com.example.employee_management.dto;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class DepartmentResponseDTO {
+
+    private Long id;
+    private String name;
+    private String location;
+}
+/*public class DepartmentResponseDTO {
 
     private Long id;
     private String name;
@@ -38,4 +54,4 @@ public class DepartmentResponseDTO {
     public void setLocation(String location) {
         this.location = location;
     }
-}
+}*/
